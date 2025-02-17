@@ -35,10 +35,6 @@
 #define BLACK 0
 #define WHITE 1
 
-// Tamanho do display
-#define WIDTH 128
-#define HEIGHT 64
-
 // Variáveis globais
 static volatile uint32_t last_time = 0; // Armazena o último evento de tempo (microssegundos)
 static volatile bool leds_ativos = true; // Armazena o estado dos LEDs
@@ -57,18 +53,18 @@ int main() {
 
     while (true) {
         // Leitura do ADC do eixo X e Y do joystick
-        adc_select_input(0); // Escolhe o canal do eixo y
-        uint16_t adc_y = adc_read(); // Leitura do eixo y
-        adc_select_input(1); // Escolhe o canal do eixo x
+        adc_select_input(0); // Escolhe o canal do eixo x
         uint16_t adc_x = adc_read(); // Leitura do eixo x
+        adc_select_input(1); // Escolhe o canal do eixo y
+        uint16_t adc_y = adc_read(); // Leitura do eixo y
 
         // Mapeamos os valores do joystick para o display
-        int pos_x = map(adc_x, 0, ADC_MAX_VALUE, 0, WIDTH - 8); // Mapeia o adc (0-4095) para a resolução do display (0-120)
-        int pos_y = map(adc_y, 0, ADC_MAX_VALUE, HEIGHT - 8, 0); // Mapeia o adc (0-4095) para a resolução do display (0-56)
+        int pos_x = map(adc_y, 0, ADC_MAX_VALUE, 0, WIDTH - 8);
+        int pos_y = map(adc_x, 0, ADC_MAX_VALUE, HEIGHT - 8, 0);
 
         update_display(pos_x, pos_y);
 
-        sleep_ms(100); // Aguarda 50ms para atualizar o display
+        sleep_ms(50); // Aguarda 50ms para atualizar o display
     }
 }
 
@@ -114,7 +110,9 @@ void init_hardware() {
     gpio_pull_up(I2C_SCL);
     // Inicializa o display OLED
     ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, I2C_PORT);
-    ssd1306_fill(&ssd, BLACK);
+    ssd1306_config(&ssd);
+    ssd1306_send_data(&ssd);
+    ssd1306_fill(&ssd, false);
     ssd1306_send_data(&ssd);
 }
 
@@ -130,7 +128,7 @@ void update_display(int x, int y) {
 
     
     ssd1306_rect(&ssd, y, x, 8, 8, WHITE, WHITE); // Desenha o quadrado
-    ssd1306_send_data(&ssd); // Envia os dados para o display 
+    ssd1306_send_data(&ssd); // Envia os dados para o display
 }
 
 // Função para mapear valores
