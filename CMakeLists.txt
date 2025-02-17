@@ -24,7 +24,7 @@ include(pico_sdk_import.cmake)
 project(conversoresAD C CXX ASM)
 pico_sdk_init()
 
-add_executable(conversoresAD conversoresAD.c lib/ssd1306.c)
+add_executable(conversoresAD conversoresAD.c inc/ssd1306.c)
 
 pico_set_program_name(conversoresAD "conversoresAD")
 pico_set_program_version(conversoresAD "0.1")
