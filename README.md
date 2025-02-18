@@ -41,7 +41,7 @@
         <li><strong>Código estruturado e comentado</strong> - Para facilitar a compreensão e manutenção.</li>
     </ul>  
     <h2>Vídeo</h2>
-      <p>Link do Vídeo: </p>
+      <p>Link do Vídeo: https://youtu.be/k_mK6LXm_Nc</p>
      <h2>Como Executar o Projeto</h2>
         <h2>Clone o Repositório</h2>
     <ol>
