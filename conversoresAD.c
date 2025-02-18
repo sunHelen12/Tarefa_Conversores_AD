@@ -8,6 +8,7 @@
 #include "inc/ssd1306.h"
 #include "inc/font.h"
 
+// Definições de pinos e constantes
 #define I2C_PORT i2c1
 #define I2C_SDA 14
 #define I2C_SCL 15
@@ -27,11 +28,13 @@
 #define BLACK 0
 #define WHITE 1
 
+// Variáveis globais
 static volatile uint32_t last_time = 0;
 static volatile bool leds_ativos = true;
 static volatile bool borda_display = false;
 ssd1306_t ssd;
 
+// Declaração de funções
 void init_hardware(void);
 void update_display(int x, int y);
 int map(int x, int in_min, int in_max, int out_min, int out_max);
@@ -41,18 +44,22 @@ void init_pwm(uint gpio);
 uint16_t leitura_joystick(uint canal);
 void atualizar_pwm_leds(void);
 
+// Função principal
 int main() {
     init_hardware();    
     while (true) {
+        // Leitura dos valores do joystick
         adc_select_input(0);
         uint16_t adc_x = adc_read();
         adc_select_input(1);
         uint16_t adc_y = adc_read();
 
+        // Mapeamento dos valores do joystick para o display
         int pos_y = map(adc_y, 0, ADC_MAX_VALUE, 0, WIDTH - 8);
         int pos_x = map(adc_x, 0, ADC_MAX_VALUE, HEIGHT - 8, 0);
         update_display(pos_y, pos_x);
 
+        // Atualização dos LEDs
         atualizar_pwm_leds();
 
         sleep_ms(100);
@@ -60,6 +67,7 @@ int main() {
     return 0;
 }
 
+// Inicialização do hardware
 void init_hardware() {
     stdio_init_all();
     adc_init();
@@ -95,8 +103,14 @@ void init_hardware() {
     ssd1306_send_data(&ssd);
 }
 
+// Atualização dos LEDs com base nos valores do joystick
 void atualizar_pwm_leds(void) {
-    
+    if (!leds_ativos) {
+        set_led_brightness(LED_VERMELHO_PIN, 0);
+        set_led_brightness(LED_AZUL_PIN, 0);
+        return;
+    }
+
     uint16_t y_valor = leitura_joystick(0);
     uint16_t x_valor = leitura_joystick(1);
 
@@ -110,11 +124,13 @@ void atualizar_pwm_leds(void) {
     set_led_brightness(LED_AZUL_PIN, brilho_azul);
 }
 
+// Leitura do valor do joystick
 uint16_t leitura_joystick(uint canal) {
     adc_select_input(canal);
     return adc_read();
 }
 
+// Atualização do display com a posição do joystick
 void update_display(int y, int x) {
     ssd1306_fill(&ssd, BLACK);
     if (borda_display) {
@@ -125,16 +141,18 @@ void update_display(int y, int x) {
     ssd1306_send_data(&ssd);
 }
 
+// Função para mapear valores
 int map(int x, int in_min, int in_max, int out_min, int out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+// Manipulador de interrupção do GPIO
 void gpio_irq_handler(uint gpio, uint32_t events) {
     uint32_t current_time = to_us_since_boot(get_absolute_time());
     if (current_time - last_time > 200000) {
         last_time = current_time;
         if (gpio == BUTTON_A_PIN) {
-           
+            leds_ativos = !leds_ativos;
         }
         if (gpio == JOYSTICK_BUTTON_PIN) {
             borda_display = !borda_display;
@@ -143,6 +161,7 @@ void gpio_irq_handler(uint gpio, uint32_t events) {
     }
 }
 
+// Inicialização do PWM
 void init_pwm(uint gpio) {
     gpio_set_function(gpio, GPIO_FUNC_PWM);
     uint slice = pwm_gpio_to_slice_num(gpio);
@@ -152,6 +171,7 @@ void init_pwm(uint gpio) {
     pwm_set_gpio_level(gpio, 0);
 }
 
+// Ajuste da intensidade dos LEDs
 void set_led_brightness(uint gpio, uint16_t value) {
     pwm_set_gpio_level(gpio, value);
 }
