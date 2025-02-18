@@ -1,7 +1,9 @@
 <h1 align="center">Tarefa Conversores Analógico-Digitais - Embarcatech 💻</h1> 
     <h2>Descrição</h2>
     <p>Este projeto utiliza um joystick analógico para controlar a intensidade dos LEDs RGB e exibir um quadrado móvel no display SSD1306. Os LEDs Azul e Vermelho ajustam seu brilho conforme os eixos Y e X, respectivamente, utilizando PWM para suavizar a variação luminosa. O botão do joystick alterna o estado do LED Verde e modifica a borda do display. O botão A ativa ou desativa os LEDs PWM. O conversor analógico-digital (ADC) do RP2040 é utilizado para capturar os valores dos eixos X e Y do joystick e convertê-los em sinais digitais para controle dos LEDs e da posição do quadrado no display.</p>
-      <h2>Objetivos</h2>
+<h2>Importante⚠️</h2>
+<p>Esse código foi produzido em um Sistema Operacional Linux. Certifique-se de importar o projeto adequadamente e verificar as configurações do <i>c_cpp_properties.json</i>.</p>      
+<h2>Objetivos</h2>
     <ul>
         <li>Compreender o funcionamento do conversor analógico-digital (ADC) no RP2040.</li>
         <li>Utilizar PWM para controlar a intensidade dos LEDs RGB com base nos valores do joystick.</li>
