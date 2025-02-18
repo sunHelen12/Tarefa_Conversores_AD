@@ -69,38 +69,40 @@ int main() {
 
 // Inicialização do hardware
 void init_hardware() {
-    stdio_init_all();
-    adc_init();
-    adc_gpio_init(JOYSTICK_X_PIN);
-    adc_gpio_init(JOYSTICK_Y_PIN);
-    gpio_init(JOYSTICK_BUTTON_PIN);
-    gpio_set_dir(JOYSTICK_BUTTON_PIN, GPIO_IN);
-    gpio_pull_up(JOYSTICK_BUTTON_PIN);
-    gpio_set_irq_enabled_with_callback(JOYSTICK_BUTTON_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
+    stdio_init_all(); // Inicializa a entrada e saída padrão (UART)
     
-    gpio_init(BUTTON_A_PIN);
-    gpio_set_dir(BUTTON_A_PIN, GPIO_IN);
-    gpio_pull_up(BUTTON_A_PIN);
-    gpio_set_irq_enabled_with_callback(BUTTON_A_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler);
-
-    gpio_init(LED_VERDE_PIN);
-    gpio_set_dir(LED_VERDE_PIN, GPIO_OUT);
-    gpio_put(LED_VERDE_PIN, 0);
-
-    init_pwm(LED_AZUL_PIN);
-    init_pwm(LED_VERMELHO_PIN);
-
-    i2c_init(I2C_PORT, 400 * 1000);
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
+    adc_init(); // Inicializa o ADC (Conversor Analógico-Digital)
+    adc_gpio_init(JOYSTICK_X_PIN); // Configura o pino do eixo X do joystick para ADC
+    adc_gpio_init(JOYSTICK_Y_PIN); // Configura o pino do eixo Y do joystick para ADC
     
-    ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, I2C_PORT);
-    ssd1306_config(&ssd);
-    ssd1306_send_data(&ssd);
-    ssd1306_fill(&ssd, false);
-    ssd1306_send_data(&ssd);
+    gpio_init(JOYSTICK_BUTTON_PIN); // Inicializa o pino do botão do joystick
+    gpio_set_dir(JOYSTICK_BUTTON_PIN, GPIO_IN); // Configura o pino do botão do joystick como entrada
+    gpio_pull_up(JOYSTICK_BUTTON_PIN); // Habilita o pull-up interno no pino do botão do joystick
+    gpio_set_irq_enabled_with_callback(JOYSTICK_BUTTON_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler); // Configura a interrupção para o botão do joystick
+    
+    gpio_init(BUTTON_A_PIN); // Inicializa o pino do botão A
+    gpio_set_dir(BUTTON_A_PIN, GPIO_IN); // Configura o pino do botão A como entrada
+    gpio_pull_up(BUTTON_A_PIN); // Habilita o pull-up interno no pino do botão A
+    gpio_set_irq_enabled_with_callback(BUTTON_A_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_irq_handler); // Configura a interrupção para o botão A
+
+    gpio_init(LED_VERDE_PIN); // Inicializa o pino do LED verde
+    gpio_set_dir(LED_VERDE_PIN, GPIO_OUT); // Configura o pino do LED verde como saída
+    gpio_put(LED_VERDE_PIN, 0); // Desliga o LED verde
+
+    init_pwm(LED_AZUL_PIN); // Inicializa o PWM para o LED azul
+    init_pwm(LED_VERMELHO_PIN); // Inicializa o PWM para o LED vermelho
+
+    i2c_init(I2C_PORT, 400 * 1000); // Inicializa o I2C com velocidade de 400kHz
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C); // Configura o pino SDA para função I2C
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C); // Configura o pino SCL para função I2C
+    gpio_pull_up(I2C_SDA); // Habilita o pull-up interno no pino SDA
+    gpio_pull_up(I2C_SCL); // Habilita o pull-up interno no pino SCL
+    
+    ssd1306_init(&ssd, WIDTH, HEIGHT, false, endereco, I2C_PORT); // Inicializa o display OLED
+    ssd1306_config(&ssd); // Configura o display OLED
+    ssd1306_send_data(&ssd); // Envia dados para o display OLED
+    ssd1306_fill(&ssd, false); // Preenche o display com a cor preta
+    ssd1306_send_data(&ssd); // Envia dados para o display OLED
 }
 
 // Atualização dos LEDs com base nos valores do joystick
