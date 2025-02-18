@@ -23,7 +23,14 @@
         <li>O display exibe um quadrado móvel que acompanha os movimentos do joystick.</li>
         <li>O botão do joystick alterna o estado do LED Verde e modifica a borda do display.</li>
         <li>O botão A ativa ou desativa os LEDs PWM.</li>
-    </ul>    
+    </ul> 
+    <h2>Tecnologias Utilizadas</h2>
+    <ul>
+      <li>Linguagem C.</li>
+      <li>IDE Visual Studio Code.</li>
+      <li>Pico SDK.</li>
+      <li>Placa BitDogLab.</li>
+    </ul>
     <h2>Requisitos do Projeto</h2>
     <ul>
         <li><strong>Uso de interrupções</strong> - Todas as funcionalidades dos botões utilizam interrupções.</li>
