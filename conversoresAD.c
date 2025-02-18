@@ -34,7 +34,7 @@ static volatile bool leds_ativos = true;
 static volatile bool borda_display = false;
 ssd1306_t ssd;
 
-// Declaração de funções
+// Protótipos de funções
 void init_hardware(void);
 void update_display(int x, int y);
 int map(int x, int in_min, int in_max, int out_min, int out_max);
