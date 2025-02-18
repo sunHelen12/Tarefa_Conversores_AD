@@ -46,10 +46,11 @@ void init_hardware(void);
 void update_display(int x, int y);
 int map(int x, int in_min, int in_max, int out_min, int out_max);
 void gpio_irq_handler(uint gpio, uint32_t events);
+uint pwm_init_gpio(uint gpio, uint wrap);
 
 // Rotina principal
 int main() {
-    init_hardware();
+    init_hardware();    
 
     while (true) {
         // Leitura do ADC do eixo X e Y do joystick
@@ -59,13 +60,15 @@ int main() {
         uint16_t adc_y = adc_read(); // Leitura do eixo y
 
         // Mapeamos os valores do joystick para o display
-        int pos_x = map(adc_y, 0, ADC_MAX_VALUE, 0, WIDTH - 8);
-        int pos_y = map(adc_x, 0, ADC_MAX_VALUE, HEIGHT - 8, 0);
+        int pos_y = map(adc_y, 0, ADC_MAX_VALUE, 0, WIDTH - 8);
+        int pos_x = map(adc_x, 0, ADC_MAX_VALUE, HEIGHT - 8, 0);
 
-        update_display(pos_x, pos_y);
+        update_display(pos_y, pos_x);           
 
-        sleep_ms(50); // Aguarda 50ms para atualizar o display
+        sleep_ms(100); // Aguarda 100ms para atualizar o display
+       
     }
+    return 0;
 }
 
 // Inicializa o hardware
@@ -117,7 +120,7 @@ void init_hardware() {
 }
 
 // Atualiza o display com a posição do joystick
-void update_display(int x, int y) {
+void update_display(int y, int x) {
     ssd1306_fill(&ssd, BLACK); // Preenche o display com a cor preta
     
     // Pressiona o botão do joystick
@@ -127,7 +130,7 @@ void update_display(int x, int y) {
     }
 
     
-    ssd1306_rect(&ssd, y, x, 8, 8, WHITE, WHITE); // Desenha o quadrado
+    ssd1306_rect(&ssd, x, y, 8, 8, WHITE, WHITE); // Desenha o quadrado
     ssd1306_send_data(&ssd); // Envia os dados para o display
 }
 
@@ -135,6 +138,8 @@ void update_display(int x, int y) {
 int map(int x, int in_min, int in_max, int out_min, int out_max) {
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
+
+
 
 // Rotina de interrupção
 void gpio_irq_handler(uint gpio, uint32_t events) {
